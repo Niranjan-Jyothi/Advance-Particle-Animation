@@ -5,6 +5,14 @@ canvas.width=window.innerWidth;
 canvas.height= window.innerHeight;
 let particlesArrray ;
 
+const gradient = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+gradient.addColorStop(0.5,'white');
+gradient.addColorStop(1,'black');
+
+const inverse_gradient = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+inverse_gradient.addColorStop(0.5,'black');
+inverse_gradient.addColorStop(1,'white');
+
 // mouse position
 let mouse = {
   x: null,
@@ -19,12 +27,18 @@ window.addEventListener('mousemove',function(event){
 
 class Particle {
   constructor(x,y,dx,dy,size,color){
-    this.x = x; this.y=y; this.dx=dx; this.dy=dy; this.size=size; this.color=color; }
+    this.x = x; this.y=y; this.dx=dx; this.dy=dy; this.size=size; this.color=color; this.mass = Math.random()*5 + 1 }
 
   draw() {
     ctx.beginPath();
     ctx.arc(this.x,this.y,this.size,0,Math.PI*2,false);
-    ctx.fillStyle = "#8c5523";
+    // if(this.x <= canvas.width/2){
+    //   ctx.fillStyle = 'white';
+    // }else{
+    //   ctx.fillStyle = 'black';
+    // }
+      ctx.fillStyle = inverse_gradient;
+
     ctx.fill();
     ctx.closePath();
   }
@@ -79,14 +93,14 @@ function init(){
 }
 // draw lines to connect close enough particles
 function connect(){
-  let opacity=1; //declaring for smooth transition between line on and off
+  //let opacity=1; //declaring for smooth transition between line on and off
 for(let a=0; a<particlesArrray.length;a++){
   for(let b=a; b<particlesArrray.length;b++){
     let distance = Math.pow(particlesArrray[a].x - particlesArrray[b].x , 2) +  Math.pow(particlesArrray[a].y - particlesArrray[b].y , 2)
 
 if ( distance < (canvas.width/12) * (canvas.height/12) ){
-    opacity=1-(distance/20000);
-    ctx.strokeStyle='rgba(140,30,70,'+opacity+')';
+    //opacity=1-(distance/20000);
+     ctx.strokeStyle= gradient; //'rgba(140,30,70,'+opacity+');
     ctx.lineWidth=1;
       ctx.beginPath();
     ctx.moveTo(particlesArrray[a].x , particlesArrray[a].y);
@@ -124,3 +138,7 @@ window.addEventListener('mouseout',function(){
 init();
 //connect();
 animate();
+
+// this.dx = -1*distX*this.mass*0.05;
+// this.dy = -1*disty*this.mass*0.05;
+//
